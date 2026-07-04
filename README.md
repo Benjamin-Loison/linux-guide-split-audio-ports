@@ -310,7 +310,7 @@ We can confirm the playback (output) and capture (input) streams the card curren
 1. Run `hdajackretask`
 2. In the _Select a codec_ drop-down select your card
 3. In the _Options_ section check `Parser hints`
-4. In the _Hints_ list set `indep_hp` and `` to _yes_ with double click on them.
+4. In the _Hints_ list set `indep_hp` to _yes_ with double click on it.
 5. Press `Install boot override`
 6. Open the file `/lib/firmware/hda-jack-retask.fw` and add `vmaster=no` below `indep_hp=yes`
 7. **Reboot to apply the changes**
