@@ -66,7 +66,7 @@ If you follow till the end (**the real deal**)
 
 ### 1.1 Gather some information about the card
 
-Run `pactl list cards` and save the output somewhere, bellow is a stripped
+Run `pactl list cards` and save the output somewhere, below is a stripped
  version of mine to keep the important things
 
 ```yaml
@@ -116,7 +116,7 @@ and other for all inputs, with an extra one that has both inputs and outputs (yo
 
 ### 1.2 Inspect the audio sinks available for our sound card
 
-Run `pactl list sinks` and save the output, bellow is a stripped
+Run `pactl list sinks` and save the output, below is a stripped
 version of mine to keep the important things
 
 ```yaml
@@ -151,7 +151,7 @@ As we can see, there is only one audio sink `alsa_output.pci-0000_00_1f.3.analog
 1. First copy the contents of folder `/usr/share/alsa-card-profile/mixer/paths/` to `/etc/alsa-card-profile/mixer/paths/`
 
     ```sh
-    mkdir -p /etc/alsa-card-profile/mixer/
+    sudo mkdir -p /etc/alsa-card-profile/mixer/
     sudo cp -r /usr/share/alsa-card-profile/mixer/paths/ /etc/alsa-card-profile/mixer/
     ```
 
@@ -177,7 +177,7 @@ As we can see, there is only one audio sink `alsa_output.pci-0000_00_1f.3.analog
 3. Delete all the other files in `/etc/alsa-card-profile/mixer/paths/` leaving only your mixer path (in my case is `analog-output-speaker.conf`) and the common file e.g:
 
     ```sh
-    sudo find /etc/alsa-card-profile/mixer/paths/ -type f ! -name 'analog-output-speaker.conf' ! -name 'analog-output.conf.common' -exec rm -f {} +
+    sudo find /etc/alsa-card-profile/mixer/paths/ -type f ! -name 'analog-output-speaker.conf' ! -name 'analog-output.conf.common' -exec rm {} +
     ```
 
 4. Edit the mixer path (in my case is `analog-output-speaker.conf`) to disable Jack detection and auto-muting:
@@ -308,9 +308,9 @@ We can confirm the playback (output) and capture (input) streams the card curren
 #### Option 1 Using hdajackretask (non-immutable distributions)
 
 1. Run `hdajackretask`
-2. In the Select a codec drop-down select your card
-3. In the Options section check `Parser hints`
-4. In the Hints list set `indep_hp` and `` to yes with double click on them.
+2. In the _Select a codec_ drop-down select your card
+3. In the _Options_ section check `Parser hints`
+4. In the _Hints_ list set `indep_hp` and `` to _yes_ with double click on them.
 5. Press `Install boot override`
 6. Open the file `/lib/firmware/hda-jack-retask.fw` and add `vmaster=no` below `indep_hp=yes`
 7. **Reboot to apply the changes**
@@ -335,7 +335,7 @@ Subsystem Id: 0x103c8575
 
 With the above we can start creating our patch file:
 
-1. Create the following file (don't copy as is, modify according to explanation bellow):
+1. Create the following file (don't copy as is, modify according to explanation below):
 
     `/lib/firmware/hda-jack-retask.fw`
 
@@ -372,7 +372,7 @@ With the above we can start creating our patch file:
 
 For immutable distros `/lib/firmware/` is not writable. As a workaround you can use an udev rule that sets the hints on boot. **This method may cause some noises during boot and is not guaranteed to be as reliable as the firmware one, if that's the case for you, suggestions to improve it are welcome**
 
-1. Create the file `/etc/udev/rules.d/91-pipewire-alsa-port-split.rules` (don't copy as is, modify according to explanation bellow)
+1. Create the file `/etc/udev/rules.d/91-pipewire-alsa-port-split.rules` (don't copy as is, modify according to explanation below)
 
     ```sh
     SUBSYSTEM!="sound", GOTO="pipewire_end"
@@ -527,10 +527,10 @@ Run `cat /proc/asound/pcm`, if there is a new sub device and has a playback sub-
     ```
 
 2. Plug-in your wired audio device then run `alsamixer -c0` (replace 0 with your card number if needed)
-   1. Un-mute any muted device (the ones with MM below the volume slider) by pressing `m`
-   2. Increase their volume to around 30 if the're on 0
+   1. Un-mute any muted device (the ones with _MM_ below the volume slider) by pressing <kbd>m</kbd>
+   2. Increase their volume to around 30 if they're on 0
    3. Enable `Independent HP` if is not enabled
-   4. Press `Esc` to exit.
+   4. Press <kbd>Esc</kbd> to exit.
 
    ![alsamixer with unmuted outputs](pics/alsamixer-unmuted-outputs.png)
 
@@ -601,7 +601,7 @@ So in my case I have:
 1. Rename your mixer path file from [2 disable Headphone jack detection for speakers](#2-disable-headphone-jack-detection-for-speakers) like below:
 
     ```sh
-    sudo mv /etc/alsa-card-profile/mixer/paths/analog-output-speaker.conf /etc/alsa-card-profile/mixer/paths/analog-output-speaker-split.conf
+    sudo mv /etc/alsa-card-profile/mixer/paths/analog-output-speaker{,-split}.conf
     ```
 
 2. Now create the file `/etc/alsa-card-profile/mixer/profile-sets/split-ports-profile.conf`
@@ -663,7 +663,7 @@ So in my case I have:
     ; in output-mappings put the name of the output mappings
     ; input-mappings put the name of the input mappings
 
-    ; NOTE: Not to be confused width the paths-output/paths-input values inside the mapping, we're not using those directly
+    ; NOTE: Not to be confused with the paths-output/paths-input values inside the mapping, we're not using those directly
 
     ; This is the profile that will have the internal speakers + jack output + all microphones
     ; in paths output put the name of the from card details
@@ -682,7 +682,7 @@ So in my case I have:
 
 ### 4.3 Link the profile to the card
 
-1. Create the file `/etc/udev/rules.d/91-pipewire-alsa-port-split.rules` (don't copy as is, modify according to explanation bellow). Also, if using the udev rule to apply hints from [Using script and udev rule for immutable distros](#using-script-and-udev-rule-for-immutable-distros) you can use the commented rule instead.
+1. Create the file `/etc/udev/rules.d/91-pipewire-alsa-port-split.rules` (don't copy as is, modify according to explanation below). Also, if using the udev rule to apply hints from [Using script and udev rule for immutable distros](#using-script-and-udev-rule-for-immutable-distros) you can use the commented rule instead.
 
     ```sh
     SUBSYSTEM!="sound", GOTO="pipewire_end"
